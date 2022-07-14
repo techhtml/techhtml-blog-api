@@ -1,10 +1,13 @@
 FROM node:18-slim
 
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY package.json ./
 
-RUN npm install --omit=dev
+RUN npm install
 
 COPY . ./
 
-CMD [ "node", "index.js" ]
+RUN npm run compile
+RUN rm -rf ./src
+
+CMD [ "npm", "start" ]
