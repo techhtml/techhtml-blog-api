@@ -5,6 +5,6 @@ export const postMessage = async (req: Request, res: Response) => {
   const {message} = req.query;
 
   const ref = firestore().collection('message');
-  ref.add({message});
+  await ref.add({message});
   res.status(200).send('message added');
 };
