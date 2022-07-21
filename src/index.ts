@@ -4,9 +4,21 @@ import cors from 'cors';
 import morgan from 'morgan';
 import {initializeApp} from 'firebase-admin/app';
 import {MessageRouter} from './router/MessageRouter';
+import {ALLOW_ORIGIN} from './const';
 
 const app = express();
-app.use(cors({origin: 'http://localhost:3000'}));
+app.use(
+  cors({
+    credentials: true,
+    origin: function (origin, callback) {
+      if (!origin || ALLOW_ORIGIN.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not Allowed CORS'));
+      }
+    },
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('combined'));
