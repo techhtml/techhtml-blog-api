@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import {initializeApp} from 'firebase-admin/app';
 import {MessageRouter} from './router/MessageRouter';
 import {ALLOW_ORIGIN} from './const';
-import {PostRouter} from './router';
+import {PostRouter, UploadRouter} from './router';
 
 const app = express();
 app.use(
@@ -21,10 +21,20 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use(
+  bodyParser.raw({
+    inflate: true,
+    limit: '3mb',
+    type: 'application/octet-stream',
+  })
+);
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('combined'));
 
-initializeApp();
+initializeApp({
+  storageBucket: 'techhtml-blog.appspot.com',
+});
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
@@ -32,6 +42,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use(MessageRouter);
 app.use(PostRouter);
+app.use(UploadRouter);
 
 const port = parseInt(`${process.env.PORT}`) || 8080;
 
